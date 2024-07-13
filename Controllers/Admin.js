@@ -6,7 +6,7 @@ const Data = [
 ]
 
 const getStudent = async (req, res)=>{
-    res.status(200).json('working')
+    res.status(200).json({message:Data})
 }
 
 module.exports = {getStudent}
