@@ -48,11 +48,10 @@ const AddStudent = async (req, res)=>{
 
 const Getstudentlist = async (req, res)=>{
     const Enroll_no = req.query?.searchKey;
-    console.log(req.query);
+    // console.log(req.query);
     if(Enroll_no){
-        console.log('working');
         const SearchedData = await student.findOne({enroll_no:Enroll_no})
-        console.log(SearchedData);
+        // console.log(SearchedData);
         if(SearchedData === null){
             return res.status(404).json({message:'data not found!'})
         }
@@ -63,7 +62,7 @@ const Getstudentlist = async (req, res)=>{
             const page = parseInt(req.query.page_no) || 1;
             const startIndex = (page - 1 ) * limit;
             const endIndex = page  * limit;
-            console.log(startIndex, endIndex);
+            // console.log(startIndex, endIndex);
             const result ={}
             if(endIndex < student.length){
                 result.next ={
@@ -97,9 +96,8 @@ const GetsingleStudent = async(req, res)=>{
     }
 }
 const DeleteStudent = async(req, res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     const {id} = req.body;
-    console.log(id);
     try {
       const deleteitem = await student.findByIdAndDelete(id);
       if(!deleteitem){
@@ -204,7 +202,6 @@ const RegisterAdmin = async (req, res)=>{
     
 }
 const GetDashboard = async (req, res)=>{
-    console.log(req.body);
     try {
          return res.status(200).json({username:  req.username, message:"Authrized"}) 
       } catch (error) {
@@ -215,7 +212,6 @@ const GetDashboard = async (req, res)=>{
 const AcceptFee = async (req, res)=>{
     const {body} = req
     const findValue = await student.findOne({enroll_no :body.enroll_no })
-    console.log(findValue);
     try {
         if(!body) return res.status(404).json({message:'Please fill form firslty'})
         if(!findValue) return res.status(404).json({message:"Student Not Found"})
@@ -242,7 +238,6 @@ const MakePayment = async (req, res)=>{
         ]
     }
     const findData = await student.find(query)
-    console.log(findData, findData == '');
     const update = { $set: {} };
     update.$set[`month.${F_month}`] = true;
     if(findData != '') return res.status(400).json({message:`Already submitted ${F_month} month fee.`})
@@ -296,26 +291,23 @@ const GetStudentList = async (req, res) => {
   
     try {
       await csvWriter.writeRecords(Data);
-      console.log('CSV file created successfully');
-      
       res.download(filePath, 'studentlist.csv', (err) => {
         if (err) {
           console.error('Error during file download:', err);
           res.status(500).send('Error downloading the file');
         } else {
-          console.log('File downloaded successfully');
           // Optionally delete the file after download
           fs.unlink(filePath, (unlinkErr) => {
             if (unlinkErr) {
               console.error('Error deleting the file:', unlinkErr);
             } else {
-              console.log('File deleted successfully');
+
             }
           });
         }
       });
     } catch (err) {
-      console.error('Error generating the CSV file:', err);
+      // console.error('Error generating the CSV file:', err);
       res.status(500).send('Error generating the CSV file');
     }
   }
@@ -336,7 +328,6 @@ const uploadStudentResult = async (req, res)=>{
             
               for(const resultdata of results){
               const {ID , Hindi, English, Math, Physics,Chemistry } = resultdata
-              console.log(Hindi);
               await student.findByIdAndUpdate(
                 ID,
                 {
@@ -354,12 +345,12 @@ const uploadStudentResult = async (req, res)=>{
             // console.log('CSV data inserted into database');
             // res.send('CSV data imported into database successfully');
           } catch (err) {
-            console.error('Error inserting data into database:', err);
+            // console.error('Error inserting data into database:', err);
             res.status(500).send('Error inserting data into database');
           }
         })
         .on('error', (err) => {
-          console.error('Error reading CSV file:', err);
+          // console.error('Error reading CSV file:', err);
           res.status(500).send('Error reading CSV file');
         });
 
