@@ -31,6 +31,7 @@ const studentloginvarify = async(req,res, next)=>{
 
 const Token_validator = async(req, res, next)=>{
     const {accessToken, refeshToken} = req.cookies
+    console.log(refeshToken);
     // console.log("printing", refeshToken);
     if(!refeshToken) return res.status(401).json({message:"Invaild Token"})
     if(accessToken){

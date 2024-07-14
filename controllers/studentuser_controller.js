@@ -6,12 +6,11 @@ const bcrypt = require('bcrypt');
 
 const studentlogin = async (req, res)=>{
     const {enrollno} = req.body; 
-    // if(!enrollno) return res.status(403).json({message:"Enrollment Number Required"})
-    console.log(enrollno);
+     // if(!enrollno) return res.status(403).json({message:"Enrollment Number Required"})
+    // console.log(enrollno);
     try {
         const userData = await student.findOne({enroll_no:enrollno})
         if(!userData) return res.status(404).json({message:"Data not found!"})
-        console.log(userData);
         res.status(200).json({data:userData, message:'success'})
     } catch (error) {
        console.log(error);
