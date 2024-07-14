@@ -5,7 +5,7 @@ const uuid = require("uuid")
 require('dotenv').config();
 const Admin_StudentRouter = require('./routes/Admin');
 const PublicRouter = require('./routes/Auth');
-const StudentRoutes = require('./routes/student')
+const StudentRoutes = require('./routes/Student')
 const {connectDatabase} = require('./connection')
 // const {dataencoded} = require('./middleware')
 const app = express();
