@@ -59,8 +59,8 @@ const renewToken = (req, res, next)=>{
     const refeshtoken = req.cookies.refeshToken;
     // console.log('refresh', refeshtoken);
     const decoded = jwt.verify(refeshtoken, process.env.TOKEN_SECRET_KEY)
-    const accessToken = jwt.sign({username:decoded?.username},process.env.TOKEN_SECRET_KEY, {expiresIn:'10m'})
-    res.cookie('accessToken', accessToken, {maxAge:10 * 60000, httpOnly:true, secure:true, sameSite:'strict'});
+    const accessToken = jwt.sign({username:decoded?.username},process.env.TOKEN_SECRET_KEY, {expiresIn:'15m'})
+    res.cookie('accessToken', accessToken, {maxAge:15 * 60000, httpOnly:true, secure:true, sameSite:'None'});
     next()
 }
 

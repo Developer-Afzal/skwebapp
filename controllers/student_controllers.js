@@ -139,8 +139,8 @@ const LoginAdmin = async (req, res)=>{
             if(checkpass){
                 const accessToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'15m'})
                 const refeshToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'30m'})
-                res.cookie('accessToken', accessToken, {maxAge:15 * 60000, httpOnly:true, secure:true, sameSite:'strict'});
-                res.cookie('refeshToken', refeshToken, {maxAge:30 * 60000, httpOnly:true, secure:true, sameSite:'strict'})
+                res.cookie('accessToken', accessToken, {maxAge:15 * 60000, httpOnly:true, secure:true, sameSite:'None'});
+                res.cookie('refeshToken', refeshToken, {maxAge:30 * 60000, httpOnly:true, secure:true, sameSite:'None'})
                 res.json({item, isAuth:true, userType:'admin', message:'success'})
             }else{
                 res.status(400).json({message:'Invalid password'})
