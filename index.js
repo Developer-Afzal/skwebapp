@@ -19,9 +19,8 @@ connectDatabase(process.env.DATABASEKEY).then((res)=>{
 //     console.log('mongo database connected !')
 // }).catch((error)=>{console.log(error)})
 
-
 const corsOptions = {
-    origin:'http://localhost:3000', // Allow only this origin
+    origin:['http://localhost:3000', 'https://skweb.onrender.com'], // Allow only this origin
     credentials:true
   };
 
