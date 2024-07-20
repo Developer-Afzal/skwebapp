@@ -116,11 +116,11 @@ const UpdateStudent = async (req, res)=>{
     try {
     const updateItem = await student.findByIdAndUpdate(_id, update, {new:true})
     if(!updateItem){
-        return res.status(400).json({message:'id not found!'})
+        return res.status(404).json({message:'id not found!'})
     }
-    res.status(200).json({message:'update successfully'})
+    res.status(200).json({message:'success', updateItem})
     } catch (error) {
-        res.status(400).json({error:error})
+        res.status(500).json({error:error})
     }
 }
 const RegisterStudent = async (req, res)=>{
@@ -368,15 +368,13 @@ const FindResult =  async(req, res)=>{
 }
    
 const updateEventList = async (req, res)=>{
-  console.log(req.body);
-  const para = req.body.para
+  const { para }= req.body
+  const Data = await latestevents.create({ paragraph:para});
     try {
-      const Data = await latestevents.create({
-        paragraph:para
-      });
-      res.status(200).json({msg:'success'}, Data)
+      if(!Data) return res.status(400).json({message:"Bad Request"})
+      res.status(201).json({message:'success', Data})
     } catch (error) {
-      res.status(403).json({message:error})
+      res.status(500).json(error)
     }
 }
 
@@ -385,7 +383,7 @@ const geteventlist = async (req, res)=>{
       const EventData = await latestevents.find({})
       if (EventData) return res.status(200).json({message:'sucess', EventData})
   } catch (error) {
-      res.status(200).json(error)
+      res.status(500).json(error)
   }
 }
 
