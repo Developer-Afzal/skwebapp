@@ -374,7 +374,7 @@ const updateEventList = async (req, res)=>{
       const Data = await latestevents.create({
         paragraph:para
       });
-      res.status(200).json({msg:'success'})
+      res.status(200).json({msg:'success'}, Data)
     } catch (error) {
       res.status(403).json({message:error})
     }
@@ -392,7 +392,7 @@ const geteventlist = async (req, res)=>{
 const deleteEventList = async (req, res)=>{
   const {id} = req.body
   try {
-    if(!id) return res.status(200).json({message:"ID required"})
+    if(!id) return res.status(400).json({message:"ID required"})
     const Response = await latestevents.findByIdAndDelete(id)
    if(!Response) return res.status(400).json({message:"Invaild Id"})
     return res.status(200).json({message:"success"})

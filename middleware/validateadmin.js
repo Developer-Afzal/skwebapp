@@ -31,12 +31,12 @@ const studentloginvarify = async(req,res, next)=>{
 
 const Token_validator = async(req, res, next)=>{
     const {accessToken, refeshToken} = req.cookies
-    console.log(refeshToken);
+    // console.log(refeshToken);
     // console.log("printing", refeshToken);
     if(!refeshToken) return res.status(401).json({message:"Invaild Token"})
     if(accessToken){
         const decodedToken = jwt.verify(accessToken, process.env.TOKEN_SECRET_KEY)
-        console.log(decodedToken);
+        // console.log(decodedToken);
         const checktoken = await admin.findOne({username : decodedToken.username})
         if(checktoken){
             next()
