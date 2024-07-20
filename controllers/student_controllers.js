@@ -1,6 +1,7 @@
 const student = require("../models/student");
 const FeeStatus = require("../models/studentfee");
 const  admin = require("../models/auth");
+const  latestevents = require("../models/events");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const stripe = require("stripe")("shdsadhsah") 
@@ -365,7 +366,40 @@ const FindResult =  async(req, res)=>{
    }
     
 }
-    
+   
+const updateEventList = async (req, res)=>{
+  console.log(req.body);
+  const para = req.body.para
+    try {
+      const Data = await latestevents.create({
+        paragraph:para
+      });
+      res.status(200).json({msg:'success'})
+    } catch (error) {
+      res.status(403).json({message:error})
+    }
+}
+
+const geteventlist = async (req, res)=>{
+  try {
+      const EventData = await latestevents.find({})
+      if (EventData) return res.status(200).json({message:'sucess', EventData})
+  } catch (error) {
+      res.status(200).json(error)
+  }
+}
+
+const deleteEventList = async (req, res)=>{
+  const {id} = req.body
+  try {
+    if(!id) return res.status(200).json({message:"ID required"})
+    const Response = await latestevents.findByIdAndDelete(id)
+   if(!Response) return res.status(400).json({message:"Invaild Id"})
+    return res.status(200).json({message:"success"})
+  } catch (error) {
+    res.status(500).json({message:'bad Request'})
+  }
+}
 
 module.exports = { 
     studentapiStart, 
@@ -382,5 +416,8 @@ module.exports = {
     MakePayment,
     GetStudentList,
     uploadStudentResult,
-    FindResult
+    FindResult,
+    updateEventList,
+    deleteEventList,
+    geteventlist
  }

@@ -13,7 +13,10 @@ const {
     AcceptFee,
     GetStudentList,
     uploadStudentResult,
-    FindResult} = require("../controllers/student_controllers")
+    FindResult,
+    updateEventList,
+    deleteEventList,
+    geteventlist} = require("../controllers/student_controllers")
 const { Token_validator, feeValidation } = require("../middleware/validateadmin")
 const router = express.Router()
 // Configure Multer for file uploads
@@ -31,5 +34,8 @@ router.put('/api/v1/payment', Token_validator, MakePayment)
 router.get('/api/v1/allstudents', Token_validator, GetStudentList)
 router.post('/api/v1/uploadresult', Token_validator, upload.single('file'), uploadStudentResult)
 router.post('/api/v1/findresult', Token_validator, FindResult)
+router.post('/api/v1/addevent', updateEventList)
+router.delete('/api/v1/deletevent', deleteEventList)
+router.get('/api/v1/geteventlist', geteventlist)
 
 module.exports = router;    
