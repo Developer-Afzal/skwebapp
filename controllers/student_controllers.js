@@ -136,10 +136,10 @@ const LoginAdmin = async (req, res)=>{
     const checkpass = await bcrypt.compare(password,ADMIN.password) 
     admin.findOne({username:username}).then((item)=> {
             if(checkpass){
-                const accessToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'15m'})
-                const refeshToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'30m'})
-                res.cookie('accessToken', accessToken, {maxAge:15 * 60000, httpOnly:true, secure:true, sameSite:'None'});
-                res.cookie('refeshToken', refeshToken, {maxAge:30 * 60000, httpOnly:true, secure:true, sameSite:'None'})
+                const accessToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'30m'})
+                const refeshToken = jwt.sign({username:username},process.env.TOKEN_SECRET_KEY, {expiresIn:'45m'})
+                res.cookie('accessToken', accessToken, {maxAge:30 * 60000, httpOnly:true, secure:true, sameSite:'None'});
+                res.cookie('refeshToken', refeshToken, {maxAge:45 * 60000, httpOnly:true, secure:true, sameSite:'None'})
                 res.json({item, isAuth:true, userType:'admin', message:'success'})
             }else{
                 res.status(400).json({message:'Invalid password'})
@@ -314,29 +314,30 @@ const GetStudentList = async (req, res) => {
   }
 
 const uploadStudentResult = async (req, res)=>{
-    if (!req.file) {
-        return res.status(400).send('No file uploaded');
+  const {key} = req.body
+    if (!req.file || !req.body) {
+        return res.status(400).json({message:'Please fill form'});
       }
+        const Data = await student.findOne({[`results.${key}`]:{"$exists":true}})
+        if(Data) return res.status(400).json({message:`${key} results already uploaded`})  
       const results = [];
       const bufferStream = new stream.PassThrough();
       bufferStream.end(req.file.buffer);
-
       bufferStream
         .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', async () => {
           try {
-            
               for(const resultdata of results){
               const {ID , Hindi, English, Math, Physics,Chemistry } = resultdata
               await student.findByIdAndUpdate(
                 ID,
                 {
-                  'results.Quaterly.Hindi':Hindi, 
-                  'results.Quaterly.English':English, 
-                  'results.Quaterly.Math':Math,
-                  'results.Quaterly.Physics':Physics,
-                  'results.Quaterly.Chemistry':Chemistry,
+                  [`results.${key}.Hindi`]:Hindi, 
+                  [`results.${key}.English`]:English, 
+                  [`results.${key}.Math`]:Math,
+                  [`results.${key}.Physics`]:Physics,
+                  [`results.${key}.Chemistry`]:Chemistry,
                 }
               )
             }
@@ -347,25 +348,26 @@ const uploadStudentResult = async (req, res)=>{
             // res.send('CSV data imported into database successfully');
           } catch (err) {
             // console.error('Error inserting data into database:', err);
-            res.status(500).send('Error inserting data into database');
+            res.status(500).json({message:'Error inserting data into database'});
           }
         })
         .on('error', (err) => {
-          // console.error('Error reading CSV file:', err);
-          res.status(500).send('Error reading CSV file');
+          console.error('Error reading CSV file:', err);
+          res.status(500).json({message:'Error reading CSV file'});
         });
 
 }
+
+
 const FindResult =  async(req, res)=>{
-   try {
-     const {enroll_no} = req.body
-     const data = await student.findOne({enroll_no:enroll_no})
-     res.status(200).json({data})
-   } catch (error) {
-    
-   }
-    
-}
+  try {
+    const {enroll_no} = req.body
+    const data = await student.findOne({enroll_no:enroll_no})
+    res.status(200).json({data})
+  } catch (error) {
+   
+  }}
+
    
 const updateEventList = async (req, res)=>{
   const { para }= req.body

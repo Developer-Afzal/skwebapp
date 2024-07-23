@@ -1,6 +1,6 @@
 const student = require("../models/student");
 const FeeStatus = require("../models/studentfee");
-const stripe = require('stripe')('sk_test_51PCLaKSJMx9F4GIVi10eS5DFgClGqHULs1IDz6nKxdz1Ib4QeD3PceQixqO2W8q3d5PleWxzj10jfKdgZOO8DmOV00wu8NIQh2');
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -29,9 +29,34 @@ const getStudentinfo = async (req, res)=>{
     }
 }
 
+const checkfeevalidation = async (req, res, next)=>{
+    const {enroll_no, F_month, s_name, amt} = req.body
+    // console.log(enroll_no, F_month, s_name, amt);
+    const Amount = amt * 100
+    const propertName = `month.${F_month}`
+    const query ={
+        $and:[
+            {enroll_no:enroll_no,[propertName]:true}
+        ]
+    }
+    const findData = await student.find(query)
+    // console.log('working', findData);
+    if(findData !== '') return res.status(404).json({message:"Already Submmited Fee for this month"})
+    next()
+}
+
 const makepayment = async (req, res)=>{
     const {enroll_no, F_month, s_name, amt} = req.body
     const Amount = amt * 100
+    const propertName = `month.${F_month}`
+    const query ={
+        $and:[
+            {enroll_no:enroll_no,[propertName]:true}
+        ]
+    }
+    const findData = await student.find(query)
+    const update = { $set: {} };
+    update.$set[`month.${F_month}`] = true;
     try {
         const session  = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -52,9 +77,10 @@ const makepayment = async (req, res)=>{
             cancel_url: `http://localhost:3000/`,
 
         })
-
-        res.status(200).json({ id: session.id });
         
+        const data = await student.updateOne({enroll_no:enroll_no}, update)
+         res.status(200).json({ id: session.id });
+
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
@@ -63,5 +89,5 @@ const makepayment = async (req, res)=>{
 
 
 module.exports= {
-    studentlogin,getStudentinfo, makepayment
+    studentlogin,getStudentinfo, checkfeevalidation,makepayment
 }
