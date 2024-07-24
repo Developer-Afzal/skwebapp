@@ -2,7 +2,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const uuid = require("uuid")
-const path = require('path');
 require('dotenv').config();
 const Admin_StudentRouter = require('./routes/Admin');
 const PublicRouter = require('./routes/Auth');
@@ -31,16 +30,6 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: false }));
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-
-  // The "catchall" handler: for any request that doesn't match one above,
-  // send back React's index.html file.
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-
 
 app.use('/', Admin_StudentRouter);
 app.use('/', PublicRouter);
