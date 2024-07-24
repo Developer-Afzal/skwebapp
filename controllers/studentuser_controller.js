@@ -77,8 +77,8 @@ const makepayment = async (req, res)=>{
                 quantity: 1,
             }],
             mode:'payment',
-            success_url: `http://localhost:3000/studentinfo/${enroll_no}`, // Replace with your success URL
-            cancel_url: `http://localhost:3000/studentinfo/${enroll_no}`,
+            success_url: `${process.env.PORT}/studentinfo/${enroll_no}`, // Replace with your success URL
+            cancel_url: `${process.env.PORT}/studentinfo/${enroll_no}`,
 
         })
         console.log(session.payment_status);
