@@ -3,7 +3,7 @@ const FeeStatus = require("../models/studentfee");
 const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const endpointSecret = process.env.WEBHOOK_PAYMENT_STATUS_KEY;
 const studentlogin = async (req, res)=>{
     const {enrollno} = req.body; 
      // if(!enrollno) return res.status(403).json({message:"Enrollment Number Required"})
@@ -40,9 +40,13 @@ const checkfeevalidation = async (req, res, next)=>{
         ]
     }
     const findData = await student.find(query)
-    // console.log('working', findData);
-    if(findData !== '') return res.status(404).json({message:"Already Submmited Fee for this month"})
-    next()
+    if(findData.length !== 0){
+        const data = {
+            data : { message:"Already Submmited Fee for this month", FeeMonth:true}
+        }
+         return res.status(404).json(data)
+         }
+    res.status(200).json({message:"success", FeeMonth:false})
 }
 
 const makepayment = async (req, res)=>{
@@ -65,7 +69,7 @@ const makepayment = async (req, res)=>{
                     currency: 'inr',
                     product_data: {
                       name: s_name,
-                      description: `Payment for ${F_month}`,
+                      description: `Payment for ${F_month} Month.`,
                     },
                     unit_amount:100 * 1,
                   },
@@ -74,20 +78,72 @@ const makepayment = async (req, res)=>{
             }],
             mode:'payment',
             success_url: `http://localhost:3000/studentinfo/${enroll_no}`, // Replace with your success URL
-            cancel_url: `http://localhost:3000/`,
+            cancel_url: `http://localhost:3000/studentinfo/${enroll_no}`,
 
         })
-        
-        const data = await student.updateOne({enroll_no:enroll_no}, update)
+        console.log(session.payment_status);
          res.status(200).json({ id: session.id });
 
     } catch (error) {
+        console.log('asfasf');
         res.status(500).send({ error: error.message });
     }
 }
 
+const checkfeeStatus = async (request, response)=>{
+    const sig = request.headers['stripe-signature'];
+    let event;
+    try {
+         // Verify the signature and extract the event
+         event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (error) {
+        // Log the error for monitoring and debugging
+    console.error(`Webhook signature verification failed: ${err.message}`);
+    return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+      // Handle the event based on its type
+  switch (event.type) {
+    case 'checkout.session.async_payment_failed':
+      const checkoutSessionAsyncPaymentFailed = event.data.object;
+      console.log(checkoutSessionAsyncPaymentFailed.id);
+      // Then define and call a function to handle the event checkout.session.async_payment_failed
+      break;
+    case 'checkout.session.async_payment_succeeded':
+      const checkoutSessionAsyncPaymentSucceeded = event.data.object;
+      console.log(checkoutSessionAsyncPaymentSucceeded.id);
+      // Then define and call a function to handle the event checkout.session.async_payment_succeeded
+      break;
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      console.log(`Checkout session completed for session ID: ${session.id}`);
+      // Fulfill the purchase, update your database, etc.
+      break;
+      case 'checkout.session.expired':
+      const checkoutSessionExpired = event.data.object;
+      console.log(checkoutSessionExpired.id);
+      // Then define and call a function to handle the event checkout.session.expired
+      break;
+    // Add more cases to handle other relevant events
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  response.sendStatus(200); // Responding to acknowledge receipt of the event
+}
+
+const Updatefeemonth = async (req, res)=>{
+    const {enroll_no, F_month, s_name, amt} = req.body
+    const data = await student.updateOne({enroll_no:enroll_no}, update)
+} 
+
 
 
 module.exports= {
-    studentlogin,getStudentinfo, checkfeevalidation,makepayment
+    studentlogin,
+    getStudentinfo, 
+    checkfeevalidation,
+    makepayment, 
+    Updatefeemonth,
+    checkfeeStatus
 }
