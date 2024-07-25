@@ -97,8 +97,8 @@ const checkfeeStatus = async (request, response)=>{
          event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     } catch (error) {
         // Log the error for monitoring and debugging
-    console.error(`Webhook signature verification failed: ${err.message}`);
-    return response.status(400).send(`Webhook Error: ${err.message}`);
+    console.error(`Webhook signature verification failed: ${error}`);
+    return response.status(400).send(`Webhook Error: ${error}`);
     }
 
       // Handle the event based on its type
