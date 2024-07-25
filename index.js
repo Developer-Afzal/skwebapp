@@ -1,6 +1,5 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const cors = require('cors')
 const uuid = require("uuid")
 const path = require('path');
@@ -12,10 +11,6 @@ const {connectDatabase} = require('./connection')
 // const {dataencoded} = require('./middleware')
 
 const app = express();
-
-// Use raw body parser to ensure the payload is not modified
-app.use(bodyParser.raw({ type: 'application/json' }));
-
 const port = process.env.PORT || 8080;
 
 // connectDatabase('mongodb://127.0.0.1:27017/skdatabase')
