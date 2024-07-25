@@ -9,7 +9,12 @@ const PublicRouter = require('./routes/Auth');
 const StudentRoutes = require('./routes/Student')
 const {connectDatabase} = require('./connection')
 // const {dataencoded} = require('./middleware')
+
 const app = express();
+
+// Use raw body parser to ensure the payload is not modified
+app.use(bodyParser.raw({ type: 'application/json' }));
+
 const port = process.env.PORT || 8080;
 
 // connectDatabase('mongodb://127.0.0.1:27017/skdatabase')
