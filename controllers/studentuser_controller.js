@@ -1,9 +1,7 @@
 const student = require("../models/student");
 const FeeStatus = require("../models/studentfee");
-const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const endpointSecret = process.env.WEBHOOK_PAYMENT_STATUS_KEY;
 const studentlogin = async (req, res)=>{
     const {enrollno} = req.body; 
      // if(!enrollno) return res.status(403).json({message:"Enrollment Number Required"})

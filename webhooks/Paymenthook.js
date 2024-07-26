@@ -1,3 +1,6 @@
+
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
+const endpointSecret = process.env.WEBHOOK_PAYMENT_STATUS_KEY;
 const checkfeeStatus = async (request, response)=>{
     console.log(request.body);
     const sig = request.headers['stripe-signature'];
