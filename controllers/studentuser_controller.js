@@ -77,7 +77,7 @@ const makepayment = async (req, res)=>{
                 quantity: 1,
             }],
             mode:'payment',
-            success_url: `https://skweb.onrender.com/studentinfo/${enroll_no}`, // Replace with your success URL
+            success_url: 'https://skweb.onrender.com/paymentsuccess', // Replace with your success URL
             cancel_url: `https://skweb.onrender.com/studentinfo/${enroll_no}`,
 
         })
