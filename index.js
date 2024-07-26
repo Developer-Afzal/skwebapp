@@ -29,9 +29,6 @@ const corsOptions = {
 // Serve static files from the React app's build directory
 // app.use(express.static(path.join(__dirname, 'build')));
 
-
-// Parse JSON bodies for this app
-app.use(express.json());
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: false }));
@@ -43,6 +40,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', Admin_StudentRouter);
 app.use('/', PublicRouter);
 app.use('/', StudentRoutes);
+
+// Parse JSON bodies for this app
+app.use(express.json());
 
 app.listen(port,  ()=>{
     console.log(port);
