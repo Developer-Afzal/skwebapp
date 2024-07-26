@@ -1,4 +1,5 @@
 const express  = require('express')
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const {studentlogin, getStudentinfo, makepayment, checkfeevalidation, Updatefeemonth, checkfeeStatus} = require ('../controllers/studentuser_controller')
 const {studentloginvarify} = require ('../middleware/validateadmin')
 const router = express.Router()
