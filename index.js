@@ -37,12 +37,14 @@ app.use(express.urlencoded({ extended: false }));
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //   });
 
-app.use('/', Admin_StudentRouter);
-app.use('/', PublicRouter);
-app.use('/', StudentRoutes);
-
 // Parse JSON bodies for this app
 app.use(express.json());
+
+app.use('/', StudentRoutes);
+app.use('/', Admin_StudentRouter);
+app.use('/', PublicRouter);
+
+
 
 app.listen(port,  ()=>{
     console.log(port);
