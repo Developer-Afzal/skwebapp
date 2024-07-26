@@ -76,7 +76,7 @@ const makepayment = async (req, res)=>{
                 quantity: 1,
             }],
             mode:'payment',
-            success_url: 'https://skweb.onrender.com/paymentsuccess', // Replace with your success URL
+            success_url: 'https://skweb.onrender.com/paymentsuccess/{CHECKOUT_SESSION_ID}', // Replace with your success URL
             cancel_url: `https://skweb.onrender.com/studentinfo/${enroll_no}`,
 
         })
@@ -86,6 +86,18 @@ const makepayment = async (req, res)=>{
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
+}
+
+const paymentInfo = async (req, res)=>{
+    const { session_id } = req.params;
+
+    try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        // Handle the successful session completion (e.g., update order status)
+        res.status(200).json({message:`Payment successful! Session ID: ${session_id}`});
+      } catch (error) {
+        res.status(500).send('Failed to retrieve session details');
+      }
 }
 
 // const checkfeeStatus = async (request, response)=>{
@@ -144,5 +156,6 @@ module.exports= {
     checkfeevalidation,
     makepayment, 
     Updatefeemonth,
+    paymentInfo
     // checkfeeStatus
 }
