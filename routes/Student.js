@@ -1,4 +1,4 @@
-const express  = require  ("express")
+const express  = require('express')
 const {studentlogin, getStudentinfo, makepayment, checkfeevalidation, Updatefeemonth, checkfeeStatus} = require ('../controllers/studentuser_controller')
 const {studentloginvarify} = require ('../middleware/validateadmin')
 const router = express.Router()

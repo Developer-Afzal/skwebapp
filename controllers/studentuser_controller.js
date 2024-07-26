@@ -90,6 +90,7 @@ const makepayment = async (req, res)=>{
 }
 
 const checkfeeStatus = async (request, response)=>{
+    console.log(request.body);
     const sig = request.headers['stripe-signature'];
     let event;
     try {
