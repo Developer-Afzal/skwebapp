@@ -3,7 +3,7 @@ const {studentlogin, getStudentinfo, makepayment, checkfeevalidation, Updatefeem
 const {studentloginvarify} = require ('../middleware/validateadmin')
 const router = express.Router()
 
-router.post('/api/v1/webhook', express.raw({ type: 'application/json' }), checkfeeStatus)
+// router.post('/api/v1/webhook', express.raw({ type: 'application/json' }), checkfeeStatus)
 router.post('/api/v1/studentlogin', studentloginvarify, studentlogin)
 router.get('/api/v1/studentinfo/:id', getStudentinfo)
 router.get('/api/v1/studentresult')

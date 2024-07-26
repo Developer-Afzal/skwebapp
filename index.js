@@ -4,6 +4,7 @@ const cors = require('cors')
 const uuid = require("uuid")
 const path = require('path');
 require('dotenv').config();
+const {checkfeeStatus} = require('./webhooks/Paymenthook')
 const Admin_StudentRouter = require('./routes/Admin');
 const PublicRouter = require('./routes/Auth');
 const StudentRoutes = require('./routes/Student')
@@ -36,6 +37,8 @@ app.use(express.urlencoded({ extended: false }));
 // app.get('/*', function (req, res) {
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //   });
+
+app.post('/api/v1/webhook', express.raw({ type: 'application/json' }), checkfeeStatus)
 
 // Parse JSON bodies for this app
 app.use(express.json());
