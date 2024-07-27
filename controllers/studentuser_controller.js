@@ -144,8 +144,15 @@ const paymentInfo = async (req, res)=>{
 // }
 
 const Updatefeemonth = async (req, res)=>{
+    const update = { $set: {} };
+    update.$set[`month.${F_month}`] = true;
     const {enroll_no, F_month, s_name, amt} = req.body
-    const data = await student.updateOne({enroll_no:enroll_no}, update)
+    try {
+        const data = await student.updateOne({enroll_no:enroll_no}, update)
+        if(data) return res.status(200).json({message:"ok"})
+    } catch (error) {
+        res.status(500).json({message:error})
+    }
 } 
 
 
