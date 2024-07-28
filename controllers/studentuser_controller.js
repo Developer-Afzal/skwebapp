@@ -70,7 +70,7 @@ const makepayment = async (req, res)=>{
                       name: s_name,
                       description: `Payment for ${F_month} Month.`,
                     },
-                    unit_amount:100 * 1,
+                    unit_amount:Amount,
                   },
                 //   price:`${amt}`,
                 quantity: 1,
